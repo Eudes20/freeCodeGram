@@ -46,4 +46,16 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Post')->orderBy('created_at', 'DESC');
     }
+    
+    //Perform any actions required after the model boots
+    protected static function booted()
+    {
+
+        //Register a created model event with the dispatcher(repartiteur).
+        static::created(function ($user) {
+            $user->profile()->create([
+                'title' => $user->username,
+            ]);
+        });
+    }
 }
