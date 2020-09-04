@@ -9,11 +9,13 @@ use Intervention\Image\Facades\Image;
 
 class ProfilesController extends Controller
 {
-    public function show($user)
+    public function show($id)
     {
-        $user = User::findOrFail($user);
+        $user = User::findOrFail($id);
 
-        return view('profiles.index', compact('user'));
+        $follow_status = (Auth::user()) ? User::find(Auth::user()->id)->following->contains($user->profile->id) : false;
+
+        return view('profiles.index', compact('user', 'follow_status'));
     }
 
     public function edit($id)
@@ -49,11 +51,13 @@ class ProfilesController extends Controller
 
             $image = Image::make(public_path("storage/{$imagePath}"))->fit(1000, 1000);
             $image->save();
+
+            $setImage = ['image' => $imagePath];
         }
         
         $user->profile->update(array_merge(
             $data,
-            ['image' => $imagePath]
+            $setImage ?? [] //if is set return itself if not return an empty array
         ));
 
         return redirect("/profile/{$user->id}");
