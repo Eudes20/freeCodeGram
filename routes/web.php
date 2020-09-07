@@ -14,9 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Auth::routes();
 
@@ -28,6 +25,7 @@ Route::put('/profile/{user}', 'ProfilesController@update')->name('profile.update
 
 Route::post('follow/{id}', 'FollowController@store')->name('follow.store');
 
+Route::get('/', 'PostsController@index')->name('post.index');
 Route::get('/p/create', 'PostsController@create')->name('post.create');
 Route::post('/p', 'PostsController@store')->name('post.store');
 Route::get('/p/{id}', 'PostsController@show')->name('post.show');
